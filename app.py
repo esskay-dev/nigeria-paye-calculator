@@ -24,6 +24,7 @@ def calculate_paye(salary):
         (9_000_000,0.18),
         (13_000_000,0.21),
         (25_000_000,0.23),
+        (50_000_000,0.25)
     ]
 
     for limit, rate in bands:
@@ -46,7 +47,7 @@ st.set_page_config(page_title="Nigeria PAYE Tax Calculator", layout="centered")
 st.title("Nigeria PAYE Tax Calculator")
 st.write("Calculate your PAYE tax based on Nigeria's new tax rates.")
 
-salary_input = st.text_input("Enter your annual income", placeholder="e.g. 3,600,000")
+salary_input = st.text_input("Enter your annual income", placeholder="e.g. 1,000,000")
 
 if st.button("Calculate Tax"):
     if salary_input.strip() == "":
@@ -64,4 +65,4 @@ if st.button("Calculate Tax"):
             st.write(f"**Net Income:** ₦{net:,.2f}")
 
         except ValueError:
-            st.error("Please enter your annual income (e.g. 3,600,000).")
+            st.error("Please enter your annual income (e.g. 1,000,000).")

@@ -14,7 +14,7 @@ def get_annual_income():
         try:
             return float(user_input.replace(",", ""))
         except ValueError:
-            print("Enter amount only (e.g. 3,600,000)")
+            print("Enter amount only (e.g. 1,000,000)")
 
 # ----------------------------------------------------
 # PAYE TAX CALCULATION
@@ -79,7 +79,7 @@ def main():
     print(f"Net Salary: ₦{net_salary:,.2f}")
 
     input("\nPress Enter to exit...")
-    
+
 # ----------------------------------------------------
 # SCRIPT ENTRY POINT
 # ----------------------------------------------------

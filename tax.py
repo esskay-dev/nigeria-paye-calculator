@@ -65,6 +65,10 @@ def calculate_paye(salary):
 # ----------------------------------------------------
 
 def main():
+    print("=" * 40)
+    print("NIGERIA PAYE TAX CALCULATOR")
+    print("=" * 40)
+
     salary = get_annual_income()
     total_tax = calculate_paye(salary)
     net_salary = salary - total_tax
@@ -74,6 +78,8 @@ def main():
     print(f"Total Tax: ₦{total_tax:,.2f}")
     print(f"Net Salary: ₦{net_salary:,.2f}")
 
+    input("\nPress Enter to exit...")
+    
 # ----------------------------------------------------
 # SCRIPT ENTRY POINT
 # ----------------------------------------------------

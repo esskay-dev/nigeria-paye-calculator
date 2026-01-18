@@ -1,6 +1,6 @@
 # Nigeria PAYE Tax Calculator
 
-A simple Python command-line application that calculates **Personal Income Tax (PAYE)** in Nigeria based on the official progressive tax bands.
+I built this calculator for personal use because of the buzz around Nigeria's new tax law. With it, all I have to do is enter my annual income, and the app automatically calculates my monthly and annual tax breakdown.
 
 ---
 

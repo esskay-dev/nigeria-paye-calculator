@@ -1,6 +1,6 @@
 # ----------------------------------------------------
 # USER INPUT
-# ----------------------------------------------------
+# ----------------------------------------------------                  
 
 def get_annual_income():
     '''Prompts user for annual income and 
@@ -14,7 +14,7 @@ def get_annual_income():
         try:
             return float(user_input.replace(",", ""))
         except ValueError:
-            print("Enter amount only (e.g. 1,000,000)")
+            print("Enter your annual income (e.g. 1,000,000)")
 
 # ----------------------------------------------------
 # PAYE TAX CALCULATION
@@ -66,17 +66,28 @@ def calculate_paye(salary):
 
 def main():
     print("=" * 40)
-    print("NIGERIA PAYE TAX CALCULATOR")
+    print("Nigeria PAYE Tax Calculator")
     print("=" * 40)
 
-    salary = get_annual_income()
-    total_tax = calculate_paye(salary)
-    net_salary = salary - total_tax
-
     print("\n--- PAYE TAX SUMMARY ...")
-    print(f"Gross Salary: ₦{salary:,.2f}")
-    print(f"Total Tax: ₦{total_tax:,.2f}")
-    print(f"Net Salary: ₦{net_salary:,.2f}")
+
+    annual_salary = get_annual_income()
+    annual_tax = calculate_paye(annual_salary)
+    annual_net = annual_salary - annual_tax
+
+    monthly_salary = annual_salary / 12
+    monthly_tax = annual_tax / 12
+    monthly_net = annual_net / 12
+
+    print("\nMONTHLY")
+    print(f"Monthly Income: ₦{monthly_salary:,.2f}")
+    print(f"Monthly Tax: ₦{monthly_tax:,.2f}")
+    print(f"Monthly Net Income: ₦{monthly_net:,.2f}")
+
+    print("\nANNUAL")
+    print(f"Annual Income: ₦{annual_salary:,.2f}")
+    print(f"Annual Tax: ₦{annual_tax:,.2f}")
+    print(f"Annual Net Income: ₦{annual_net:,.2f}")
 
     input("\nPress Enter to exit...")
 

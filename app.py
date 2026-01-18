@@ -68,7 +68,7 @@ st.divider()
 # INPUT
 # ----------------------------------------------------
 salary_input = st.text_input(
-    "Enter your annual income (₦)",
+    "Enter your annual income",
     placeholder="e.g. 1,000,000"
 )
 

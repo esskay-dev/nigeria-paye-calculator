@@ -11,48 +11,57 @@ st.set_page_config(
 )
 
 # ----------------------------------------------------
-# CUSTOM STYLES (MOBILE FIRST)
+# GLOBAL STYLES (Mobile friendly)
 # ----------------------------------------------------
-st.markdown("""
-<style>
-#MainMenu, footer, header {visibility: hidden;}
+st.markdown(
+    """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
 
-/* Metric cards */
-[data-testid="metric-container"] {
-    padding: 12px;
-    border-radius: 12px;
-    background-color: #f8f9fa;
-}
+    /* Metric cards */
+    [data-testid="metric-container"] {
+        padding: 12px;
+        border-radius: 12px;
+        background-color: #0f172a;
+    }
 
-/* Metric label */
-[data-testid="metric-container"] label {
-    font-size: 0.85rem;
-}
+    [data-testid="metric-container"] label {
+        font-size: 0.8rem;
+        color: #cbd5f5;
+    }
 
-/* Metric value */
-[data-testid="metric-container"] div {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
+    [data-testid="metric-container"] div {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: white;
+    }
 
-/* Section headers */
-h3 {
-    font-size: 1.2rem;
-}
-</style>
-""", unsafe_allow_html=True)
+    h3 {
+        font-size: 1.15rem;
+    }
+
+    @media (max-width: 768px) {
+        [data-testid="metric-container"] div {
+            font-size: 1rem;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ----------------------------------------------------
 # HEADER
 # ----------------------------------------------------
 st.title("Nigeria PAYE Tax Calculator")
-st.caption("Calculate your PAYE tax using Nigeria's new tax rates")
-
+st.caption("Mobile-friendly PAYE calculator using Nigeria’s new tax rates")
 st.divider()
 
 # ----------------------------------------------------
@@ -63,20 +72,36 @@ salary_input = st.text_input(
     placeholder="e.g. 1,000,000"
 )
 
-# ----------------------------------------------------
-# TABS (BEST FOR MOBILE)
-# ----------------------------------------------------
-tabs = st.tabs(["Monthly Breakdown", "Annual Breakdown"])
+st.divider()
 
-with tabs[0]:
-    monthly_income = st.metric("Monthly Income", "₦0.00")
-    monthly_tax = st.metric("Monthly Tax", "₦0.00")
-    monthly_net = st.metric("Monthly Net Income", "₦0.00")
+# ----------------------------------------------------
+# TABS (BEST mobile UX)
+# ----------------------------------------------------
+monthly_tab, annual_tab = st.tabs(["Monthly Breakdown", "Annual Breakdown"])
 
-with tabs[1]:
-    annual_income = st.metric("Annual Income", "₦0.00")
-    annual_tax = st.metric("Annual Tax", "₦0.00")
-    annual_net = st.metric("Annual Net Income", "₦0.00")
+# ----------------------------------------------------
+# MONTHLY TAB (PLACEHOLDERS ONLY)
+# ----------------------------------------------------
+with monthly_tab:
+    m_income = st.empty()
+    m_tax = st.empty()
+    m_net = st.empty()
+
+    m_income.metric("Monthly Income", "₦0.00")
+    m_tax.metric("Monthly Tax", "₦0.00")
+    m_net.metric("Monthly Net Income", "₦0.00")
+
+# ----------------------------------------------------
+# ANNUAL TAB (PLACEHOLDERS ONLY)
+# ----------------------------------------------------
+with annual_tab:
+    a_income = st.empty()
+    a_tax = st.empty()
+    a_net = st.empty()
+
+    a_income.metric("Annual Income", "₦0.00")
+    a_tax.metric("Annual Tax", "₦0.00")
+    a_net.metric("Annual Net Income", "₦0.00")
 
 st.divider()
 
@@ -92,28 +117,26 @@ if st.button("Calculate PAYE", use_container_width=True):
         try:
             salary = float(salary_input.replace(",", ""))
 
-            # Annual values
-            annual_tax_val = calculate_paye(salary)
-            annual_net_val = salary - annual_tax_val
+            # --- Annual ---
+            annual_tax = calculate_paye(salary)
+            annual_net = salary - annual_tax
 
-            # Monthly values
+            # --- Monthly ---
             monthly_salary = salary / 12
-            monthly_tax_val = annual_tax_val / 12
-            monthly_net_val = monthly_salary - monthly_tax_val
+            monthly_tax = annual_tax / 12
+            monthly_net = monthly_salary - monthly_tax
+
+            # --- Update Monthly ---
+            m_income.metric("Monthly Income", f"₦{monthly_salary:,.2f}")
+            m_tax.metric("Monthly Tax", f"₦{monthly_tax:,.2f}")
+            m_net.metric("Monthly Net Income", f"₦{monthly_net:,.2f}")
+
+            # --- Update Annual ---
+            a_income.metric("Annual Income", f"₦{salary:,.2f}")
+            a_tax.metric("Annual Tax", f"₦{annual_tax:,.2f}")
+            a_net.metric("Annual Net Income", f"₦{annual_net:,.2f}")
 
             st.success("Calculation complete")
-
-            # Update Monthly Tab
-            with tabs[0]:
-                st.metric("Monthly Income", f"₦{monthly_salary:,.2f}")
-                st.metric("Monthly Tax", f"₦{monthly_tax_val:,.2f}")
-                st.metric("Monthly Net Income", f"₦{monthly_net_val:,.2f}")
-
-            # Update Annual Tab
-            with tabs[1]:
-                st.metric("Annual Income", f"₦{salary:,.2f}")
-                st.metric("Annual Tax", f"₦{annual_tax_val:,.2f}")
-                st.metric("Annual Net Income", f"₦{annual_net_val:,.2f}")
 
         except ValueError:
             st.error("Enter a valid amount (e.g. 1,000,000)")

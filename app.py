@@ -1,68 +1,106 @@
 import streamlit as st
 from tax import calculate_paye
 
+# ----------------------------------------------------
+# PAGE CONFIG
+# ----------------------------------------------------
+st.set_page_config(
+    page_title="Nigeria PAYE Tax Calculator",
+    layout="centered"
+)
+# ----------------------------------------------------
+# HIDE STREAMLIT DEFAULT UI
+# ----------------------------------------------------
 hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            header {visibility: hidden;}
-            </style>
-            """
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+"""
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # ----------------------------------------------------
-# PAYE CALCULATION FUNCTION
+# HELPER FUNCTION (FORMAT NAIRA)
 # ----------------------------------------------------
-
-def calculate_paye(salary):
-    tax = 0
-    remaining_income = salary
-
-    bands = [
-        (800_000,0.0),
-        (2_200_000,0.15),
-        (9_000_000,0.18),
-        (13_000_000,0.21),
-        (25_000_000,0.23),
-        (50_000_000,0.25)
-    ]
-
-    for limit, rate in bands:
-        if remaining_income <= 0:
-            break
-        taxable = min(remaining_income, limit)
-        tax += taxable * rate
-        remaining_income -= taxable
-
-    if remaining_income > 0:
-        tax += remaining_income * 0.25
-    
-    return tax
+def format_naira(amount):
+    return f"₦{amount:,.2f}"
 
 # ----------------------------------------------------
-# STREAMLIT UI
+# UI HEADER
 # ----------------------------------------------------
-st.set_page_config(page_title="Nigeria PAYE Tax Calculator", layout="centered")
-
-st.title("Nigeria PAYE Tax Calculator")
+st.title("🇳🇬 Nigeria PAYE Tax Calculator")
 st.write("Calculate your PAYE tax based on Nigeria's new tax rates.")
 
-salary_input = st.text_input("Enter your annual income", placeholder="e.g. 1,000,000")
+salary_input = st.text_input(
+    "Enter your annual income",
+    placeholder="e.g. 3,600,000"
+)
 
+st.divider()
+
+# ----------------------------------------------------
+# MONTHLY BREAKDOWN PLACEHOLDERS
+# ----------------------------------------------------
+st.subheader("Monthly Breakdown")
+
+m_col1, m_col2, m_col3 = st.columns(3)
+
+m_income = m_col1.empty()
+m_tax = m_col2.empty()
+m_net = m_col3.empty()
+
+m_income.metric("Monthly Income", "₦0.00")
+m_tax.metric("Monthly Tax", "₦0.00")
+m_net.metric("Monthly Net Income", "₦0.00")
+
+# ----------------------------------------------------
+# ANNUAL BREAKDOWN PLACEHOLDERS
+# ----------------------------------------------------
+st.subheader("Annual Breakdown")
+
+a_col1, a_col2, a_col3 = st.columns(3)
+
+a_income = a_col1.empty()
+a_tax = a_col2.empty()
+a_net = a_col3.empty()
+
+a_income.metric("Annual Income", "₦0.00")
+a_tax.metric("Annual Tax", "₦0.00")
+a_net.metric("Annual Net Income", "₦0.00")
+
+st.divider()
+
+# ----------------------------------------------------
+# CALCULATE BUTTON
+# ----------------------------------------------------
 if st.button("Calculate Tax"):
     if salary_input.strip() == "":
         st.error("Please enter your annual income.")
     else:
         try:
             salary = float(salary_input.replace(",", ""))
-            tax = calculate_paye(salary)
-            net = salary - tax
 
-            st.success("Calculation Complete!")
+            # Annual calculations
+            annual_tax = calculate_paye(salary)
+            annual_net = salary - annual_tax
 
-            st.write(f"**Gross Salary:** ₦{salary:,.2f}")
-            st.write(f"**Annual PAYE Tax:** ₦{tax:,.2f}")
-            st.write(f"**Net Income:** ₦{net:,.2f}")
+            # Monthly calculations
+            monthly_salary = salary / 12
+            monthly_tax = annual_tax / 12
+            monthly_net = monthly_salary - monthly_tax
+
+            st.success("Calculation Complete")
+
+            # Update Monthly Metrics
+            m_income.metric("Monthly Income", format_naira(monthly_salary))
+            m_tax.metric("Monthly Tax", format_naira(monthly_tax))
+            m_net.metric("Monthly Net Income", format_naira(monthly_net))
+
+            # Update Annual Metrics
+            a_income.metric("Annual Income", format_naira(salary))
+            a_tax.metric("Annual Tax", format_naira(annual_tax))
+            a_net.metric("Annual Net Income", format_naira(annual_net))
 
         except ValueError:
-            st.error("Please enter your annual income (e.g. 1,000,000).")
+            st.error("Please enter a valid amount (e.g. 1,000,000)")

@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # ----------------------------------------------------
-# GLOBAL STYLES (Mobile friendly)
+# STYLES
 # ----------------------------------------------------
 st.markdown(
     """
@@ -61,21 +61,21 @@ st.markdown(
 # HEADER
 # ----------------------------------------------------
 st.title("Nigeria PAYE Tax Calculator")
-st.caption("Mobile-friendly PAYE calculator using Nigeria’s new tax rates")
+st.caption("Calculate your PAYE based on Nigeria’s new tax rates")
 st.divider()
 
 # ----------------------------------------------------
 # INPUT
 # ----------------------------------------------------
 salary_input = st.text_input(
-    "Annual Income (₦)",
+    "Enter your annual income (₦)",
     placeholder="e.g. 1,000,000"
 )
 
 st.divider()
 
 # ----------------------------------------------------
-# TABS (BEST mobile UX)
+# TABS (Mobile UX)
 # ----------------------------------------------------
 monthly_tab, annual_tab = st.tabs(["Monthly Breakdown", "Annual Breakdown"])
 

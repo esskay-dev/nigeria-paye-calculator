@@ -6,50 +6,45 @@ from tax import calculate_paye
 # ----------------------------------------------------
 st.set_page_config(
     page_title="Nigeria PAYE Tax Calculator",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    layout="centered"
 )
 
 # ----------------------------------------------------
-# HIDE STREAMLIT UI + MOBILE STYLES
+# HIDE STREAMLIT DEFAULT UI + STYLE
 # ----------------------------------------------------
 st.markdown("""
 <style>
-#MainMenu, footer, header {visibility: hidden;}
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
 
 .block-container {
-    padding-top: 2rem;
+    padding-top: 1.5rem;
     padding-bottom: 2rem;
 }
 
-/* Metric card */
+/* Metric styling */
 [data-testid="metric-container"] {
     padding: 12px;
     border-radius: 12px;
-    background-color: #f8f9fa;
+    background-color: #111827;
 }
 
 /* Metric label */
 [data-testid="metric-container"] label {
     font-size: 0.85rem;
+    color: #9ca3af;
 }
 
 /* Metric value */
 [data-testid="metric-container"] div {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
-/* Headers */
+/* Section headers */
 h3 {
     font-size: 1.2rem;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    [data-testid="metric-container"] div {
-        font-size: 1rem;
-    }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -58,7 +53,8 @@ h3 {
 # HEADER
 # ----------------------------------------------------
 st.title("Nigeria PAYE Tax Calculator")
-st.caption("Mobile-friendly PAYE calculator using Nigeria's new tax rates")
+st.caption("Calculate your PAYE tax using Nigeria’s new tax rates")
+
 st.divider()
 
 # ----------------------------------------------------
@@ -69,22 +65,35 @@ salary_input = st.text_input(
     placeholder="e.g. 1,000,000"
 )
 
+st.divider()
+
 # ----------------------------------------------------
 # LAYOUT: MONTHLY (LEFT) | ANNUAL (RIGHT)
 # ----------------------------------------------------
 left_col, right_col = st.columns(2)
 
+# MONTHLY
 with left_col:
     st.subheader("Monthly Breakdown")
-    m_income = st.metric("Monthly Income", "₦0.00")
-    m_tax = st.metric("Monthly Tax", "₦0.00")
-    m_net = st.metric("Monthly Net Income", "₦0.00")
+    m_income = st.empty()
+    m_tax = st.empty()
+    m_net = st.empty()
 
+# ANNUAL
 with right_col:
     st.subheader("Annual Breakdown")
-    a_income = st.metric("Annual Income", "₦0.00")
-    a_tax = st.metric("Annual Tax", "₦0.00")
-    a_net = st.metric("Annual Net Income", "₦0.00")
+    a_income = st.empty()
+    a_tax = st.empty()
+    a_net = st.empty()
+
+# DEFAULT VALUES
+m_income.metric("Monthly Income", "₦0.00")
+m_tax.metric("Monthly Tax", "₦0.00")
+m_net.metric("Monthly Net Income", "₦0.00")
+
+a_income.metric("Annual Income", "₦0.00")
+a_tax.metric("Annual Tax", "₦0.00")
+a_net.metric("Annual Net Income", "₦0.00")
 
 st.divider()
 
@@ -93,32 +102,29 @@ st.divider()
 # ----------------------------------------------------
 if st.button("Calculate PAYE", use_container_width=True):
 
-    if not salary_input.strip():
+    if salary_input.strip() == "":
         st.error("Please enter your annual income.")
     else:
         try:
             salary = float(salary_input.replace(",", ""))
 
-            # Annual
+            # Annual calculations
             annual_tax = calculate_paye(salary)
             annual_net = salary - annual_tax
 
-            # Monthly
+            # Monthly calculations
             monthly_salary = salary / 12
             monthly_tax = annual_tax / 12
             monthly_net = monthly_salary - monthly_tax
 
-            st.success("Calculation complete")
+            # Update metrics
+            m_income.metric("Monthly Income", f"₦{monthly_salary:,.2f}")
+            m_tax.metric("Monthly Tax", f"₦{monthly_tax:,.2f}")
+            m_net.metric("Monthly Net Income", f"₦{monthly_net:,.2f}")
 
-            # Update Monthly
-            left_col.metric("Monthly Income", f"₦{monthly_salary:,.2f}")
-            left_col.metric("Monthly Tax", f"₦{monthly_tax:,.2f}")
-            left_col.metric("Monthly Net Income", f"₦{monthly_net:,.2f}")
-
-            # Update Annual
-            right_col.metric("Annual Income", f"₦{salary:,.2f}")
-            right_col.metric("Annual Tax", f"₦{annual_tax:,.2f}")
-            right_col.metric("Annual Net Income", f"₦{annual_net:,.2f}")
+            a_income.metric("Annual Income", f"₦{salary:,.2f}")
+            a_tax.metric("Annual Tax", f"₦{annual_tax:,.2f}")
+            a_net.metric("Annual Net Income", f"₦{annual_net:,.2f}")
 
         except ValueError:
             st.error("Enter a valid amount (e.g. 1,000,000)")

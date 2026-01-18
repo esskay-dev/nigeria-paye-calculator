@@ -1,4 +1,4 @@
-# Nigeria PAYE Tax Calculator
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b779c322-92b0-4930-adba-9dcd1c3f983c" /># Nigeria PAYE Tax Calculator
 
 I built this calculator for personal use because of the buzz around Nigeria's new tax law. With it, all I have to do is enter my annual income, and the app automatically calculates my monthly and annual tax breakdown.
 

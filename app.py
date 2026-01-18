@@ -29,12 +29,12 @@ def format_naira(amount):
 # ----------------------------------------------------
 # UI HEADER
 # ----------------------------------------------------
-st.title("🇳🇬 Nigeria PAYE Tax Calculator")
+st.title("Nigeria PAYE Tax Calculator")
 st.write("Calculate your PAYE tax based on Nigeria's new tax rates.")
 
 salary_input = st.text_input(
     "Enter your annual income",
-    placeholder="e.g. 3,600,000"
+    placeholder="e.g. 1,00,000"
 )
 
 st.divider()
